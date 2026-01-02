@@ -7,7 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Kelude\MessageForwarder\MessageForwarderServiceProvider;
 use Symfony\Component\Console\Attribute\AsCommand;
 
-#[AsCommand(name: 'sms-forwarder:install')]
+#[AsCommand(name: 'message-forwarder:install')]
 class InstallCommand extends Command
 {
     /**
@@ -15,7 +15,7 @@ class InstallCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'sms-forwarder:install';
+    protected $signature = 'message-forwarder:install';
 
     /**
      * The console command description.
