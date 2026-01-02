@@ -1,7 +1,7 @@
 {
-    "name": "kelude/laravel-message-forwarder",
-    "description": "Laravel Message Forwarder.",
-    "keywords": ["laravel", "message", "forwarder"],
+    "name": "kelude/laravel-forwarder",
+    "description": "Laravel Forwarder.",
+    "keywords": ["laravel", "forwarder", "messages forwarder", "notifications forwarder", "calls forwarder"],
     "license": "MIT",
     "require": {
         "php": "^8.2",
