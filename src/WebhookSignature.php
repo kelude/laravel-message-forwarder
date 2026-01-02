@@ -1,0 +1,80 @@
+<?php
+
+namespace Kelude\MessageForwarder;
+
+use Kelude\MessageForwarder\Exceptions\SignatureVerificationException;
+
+class WebhookSignature
+{
+    /**
+     * Verifies the signature payload sent by MessageForwarder.
+     *
+     * @param  string  $payload
+     * @param  string  $secret
+     * @param  int|null  $tolerance
+     * @return bool
+     *
+     * @throws SignatureVerificationException
+     */
+    public static function verifyPayload(string $payload, string $secret, int $tolerance = null): bool
+    {
+        $data = self::parsePayload($payload);
+
+        $timestamp = $data['timestamp'] ?? null;
+        $signature = $data['sign'] ?? null;
+
+        if (empty($timestamp) || empty($signature)) {
+            throw SignatureVerificationException::factory(
+                'Unable to extract timestamp and signatures from payload',
+                $payload
+            );
+        }
+
+        $signedPayload = "{$timestamp}\n{$secret}";
+        $expectedSignature = self::computeSignature($signedPayload, $secret);
+
+        if (! hash_equals($expectedSignature, $signature)) {
+            throw SignatureVerificationException::factory(
+                'No signatures found matching the expected signature for payload',
+                $payload
+            );
+        }
+
+        // Check if timestamp is within tolerance
+        if (($tolerance > 0) && (abs(time() - round($timestamp / 1000)) > $tolerance)) {
+            throw SignatureVerificationException::factory(
+                'Timestamp outside the tolerance zone',
+                $payload
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * Computes the signature for a given payload and secret.
+     *
+     * @param  string  $payload
+     * @param  string  $secret
+     * @return string
+     */
+    private static function computeSignature(string $payload, string $secret): string
+    {
+        $binary = hash_hmac('sha256', $payload, $secret, true);
+
+        return urlencode(base64_encode($binary));
+    }
+
+    /**
+     * Parse the given payload string into an array.
+     *
+     * @param  string  $payload
+     * @return array
+     */
+    private static function parsePayload(string $payload): array
+    {
+        parse_str($payload, $data);
+
+        return $data;
+    }
+}
