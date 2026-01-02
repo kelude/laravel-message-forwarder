@@ -1,42 +1,42 @@
-# Laravel Message Forwarder
+# Laravel Forwarder
 
-A Laravel package to easily handle incoming MessageForwarder webhooks.
+A Laravel package to easily handle incoming Forwarder webhooks.
 
 ## Installation
 
 You can install the package via composer:
 
 ```bash
-composer require kelude/laravel-message-forwarder:dev-main
+composer require kelude/laravel-forwarder:dev-main
 ```
 
 After installing, run the install command to scaffold the necessary files:
 
 ```bash
-php artisan message-forwarder:install
+php artisan forwarder:install
 ```
 
 This command will:
-1. Publish the configuration file to `config/message_forwarder.php`.
-2. Publish the webhook handler action to `app/Actions/MessageForwarder/HandleWebhook.php`.
-3. Publish and register the `MessageForwarderServiceProvider` in your application.
+1. Publish the configuration file to `config/forwarder.php`.
+2. Publish the webhook handler action to `app/Actions/Forwarder/HandleWebhook.php`.
+3. Publish and register the `ForwarderServiceProvider` in your application.
 
 ## Usage
 
 ### Handling Webhooks
 
-The package uses an Action class to handle incoming webhooks. After installation, you can find the handler at `app/Actions/MessageForwarder/HandleWebhook.php`.
+The package uses an Action class to handle incoming webhooks. After installation, you can find the handler at `app/Actions/Forwarder/HandleWebhook.php`.
 
-You should modify the `handle` method in this class to implement your custom logic (e.g., saving the messages to the database, forwarding it to Telegram/Slack, etc.).
+You should modify the `handle` method in this class to implement your custom logic (e.g., saving the message to the database, forwarding it to Telegram/Slack, etc.).
 
 ```php
 <?php
 
-namespace App\Actions\MessageForwarder;
+namespace App\Actions\Forwarder;
 
 use Illuminate\Http\Request;
 // use Illuminate\Support\Facades\Log;
-use Kelude\MessageForwarder\Contracts\HandlesWebhooks;
+use Kelude\Forwarder\Contracts\HandlesWebhooks;
 use Symfony\Component\HttpFoundation\Response;
 
 class HandleWebhook implements HandlesWebhooks
@@ -60,17 +60,17 @@ class HandleWebhook implements HandlesWebhooks
 
 ### Configuration
 
-You can configure the package in `config/message_forwarder.php`.
+You can configure the package in `config/forwarder.php`.
 
 #### Route Prefix
-By default, the webhook route is available at `/message-forwarder/webhook`. You can change the prefix in the config or via `.env`:
+By default, the webhook route is available at `/forwarder/webhook`. You can change the prefix in the config or via `.env`:
 
 ```env
-MESSAGE_FORWARDER_PREFIX=custom-prefix
+FORWARDER_PREFIX=custom-prefix
 ```
 
 #### Middleware
-You can add custom middleware to the webhook route in `config/message_forwarder.php`:
+You can add custom middleware to the webhook route in `config/forwarder.php`:
 
 ```php
 'middleware' => ['api'],
@@ -82,7 +82,7 @@ To ensure that the webhook requests are coming from a trusted source, you should
 
 1. Set the secret in your `.env` file:
    ```env
-   MESSAGE_FORWARDER_WEBHOOK_SECRET=your-secret-key
+   FORWARDER_WEBHOOK_SECRET=your-secret-key
    ```
 
 2. The package will automatically verify the signature included in the request body (`sign` parameter) using this secret.
