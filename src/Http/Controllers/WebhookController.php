@@ -13,7 +13,7 @@ class WebhookController extends Controller
 {
     public function __construct()
     {
-        if (config('sms_forwarder.webhook.secret')) {
+        if (config('message_forwarder.webhook.secret')) {
             $this->middleware(VerifyWebhookSignature::class);
         }
     }

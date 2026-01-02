@@ -21,8 +21,8 @@ class VerifyWebhookSignature
         try {
             WebhookSignature::verifyPayload(
                 $request->getContent(),
-                config('sms_forwarder.webhook.secret'),
-                config('sms_forwarder.webhook.tolerance')
+                config('message_forwarder.webhook.secret'),
+                config('message_forwarder.webhook.tolerance')
             );
         } catch (SignatureVerificationException $exception) {
             throw new AccessDeniedHttpException($exception->getMessage(), $exception);
